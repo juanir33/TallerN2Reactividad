@@ -21,6 +21,8 @@ import reactor.core.Exceptions;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.function.Function;
+
 /**
  * Learn how to deal with errors.
  *
@@ -49,8 +51,16 @@ public class Part07Errors {
 	// TODO Implement a method that capitalizes each user of the incoming flux using the
 	// #capitalizeUser method and emits an error containing a GetOutOfHereException error
 	Flux<User> capitalizeMany(Flux<User> flux) {
-		return null;
+
+		return flux.map(user -> {
+			try {
+				return capitalizeUser(user);
+			} catch (GetOutOfHereException err) {
+				throw  Exceptions.propagate(err);
+			}}
+		) ;
 	}
+
 
 	User capitalizeUser(User user) throws GetOutOfHereException {
 		if (user.equals(User.SAUL)) {
